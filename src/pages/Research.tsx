@@ -4,9 +4,9 @@ import { useNavigate } from 'react-router-dom';
 
 
 
-export function English() {
+export function Research() {
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState('home');
+  const [activeTab, setActiveTab] = useState('research');
   const [open, setOpen] = useState(false);
   const [showDonationModal, setShowDonationModal] = useState(false);
   const [donationAmount, setDonationAmount] = useState(500);
@@ -613,4 +613,4 @@ container mx-auto px-4 py-6
   );
 }
 
-export default English;
+export default Research;
