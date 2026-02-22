@@ -7,8 +7,8 @@ function App() {
   return (
     <Routes>
       <Route path="/" element={<Tamil />} />
-      <Route path="/English" element={<English />} />
-      <Route path="/Research" element={<Research />} />
+      <Route path="/english" element={<English />} />
+      <Route path="/research" element={<Research />} />
     </Routes>
   );
 }
