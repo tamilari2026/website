@@ -53,6 +53,35 @@ export function Tamil() {
     boxShadow: '0 4px 6px #ab8040'
   };
 
+  const fetchBlob = async (blobUrl:string) => {
+    const response = await fetch(blobUrl);
+    if (response.ok) {     
+      return await response.blob();
+    }
+    return null;
+  };
+
+  const downloadFile = async (fileUrl:string, fileName:string, fileType:string) => {    
+   fetchBlob(fileUrl).then((blob)=> 
+    {
+      if(blob != null)
+      {
+        const data = new Blob([blob],{type: 'application/octet-stream'});
+        const url = URL.createObjectURL(data);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = fileName+'.'+fileType;
+        link.rel = 'noopener noreferrer'; // Security best practice
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+      }
+    }).catch((error) => {
+      console.error('Error fetching blob:', error);
+    }); 
+  };
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}     
@@ -234,6 +263,7 @@ container mx-auto px-4 py-6
                         <div className="flex justify-between items-center">
                       <a 
                         href={area.downloadLink} 
+                        onClick={ev => {ev.preventDefault(); downloadFile(area.downloadLink, area.title, area.filetype);}}
                         download={area.title+'.'+area.filetype.toLowerCase()}
                         target="_blank"
                         rel="noopener noreferrer"

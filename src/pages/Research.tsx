@@ -2,8 +2,6 @@ import { useState } from 'react';
 import { Menu, X } from 'lucide-react'
 import { useNavigate } from 'react-router-dom';
 
-
-
 export function Research() {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('research');
@@ -52,6 +50,35 @@ export function Research() {
     padding: '50px 100px 75px 75px',
     borderRadius: '5px', // CamelCase for border-radius
     boxShadow: '0 4px 6px #ab8040'
+  };
+
+  const fetchBlob = async (blobUrl:string) => {
+    const response = await fetch(blobUrl);
+    if (response.ok) {     
+      return await response.blob();
+    }
+    return null;
+  };
+
+  const downloadFile = async (fileUrl:string, fileName:string, fileType:string) => {    
+   fetchBlob(fileUrl).then((blob)=> 
+    {
+      if(blob != null)
+      {
+        const data = new Blob([blob],{type: 'application/octet-stream'});
+        const url = URL.createObjectURL(data);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = fileName+'.'+fileType;
+        link.rel = 'noopener noreferrer'; // Security best practice
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+      }
+    }).catch((error) => {
+      console.error('Error fetching blob:', error);
+    }); 
   };
 
   return (
@@ -234,12 +261,15 @@ container mx-auto px-4 py-6
                       <div className="mt-4">
                         <div className="flex justify-between items-center">
                       <a 
-                        href={area.downloadLink} 
+                        href={area.downloadLink}
+                        onClick={ev => {ev.preventDefault(); downloadFile(area.downloadLink, area.title, area.filetype);}}
                         download={area.title+'.'+area.filetype.toLowerCase()}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="text-[#945410] hover:text-[#28150D] font-medium flex items-center"
                       >
+                      
+                      
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor">
                           <path fillRule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clipRule="evenodd" />
                         </svg>
@@ -614,3 +644,5 @@ container mx-auto px-4 py-6
 }
 
 export default Research;
+
+
